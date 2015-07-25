@@ -35,7 +35,7 @@ $(document).ready(function(){
                             ticketTmp = ["[ticket]"]
                         }
                     }
-                    description = (descripInd > -1) ? "("+ticketTmp[0]+") "+ $.trim(req.title.substr(descripInd+1,req.title.length)) : "[description]"
+                    description = (descripInd > -1) ? "("+ticketTmp[0]+") "+$.trim(req.title.substr(descripInd+1,req.title.length)) :"("+ticketTmp[0]+") "+ "[description]"
                     ticketLink = "https://espnjira.disney.com/browse/"+ticketTmp[0]
                     var notes = $("#releaseNotes")
                     var notesText = notes.text()
