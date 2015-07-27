@@ -4,62 +4,84 @@ $(document).ready(function(){
     })
     $("#input").submit(function(event){
         event.preventDefault();
-
+        var addedInput = $('#added').val()
+        var addedPRs = addedInput.split(',');
+        var addValue = null
+        var error = false;
+        var errorMsg = "There appears to be something wrong, try again.";
+        if(addedPRs.indexOf($('#inputPR').val()) != -1){
+            error = true
+            errorMsg = "You have already added this PR."
+        }
+        if(addedInput.length == 0){
+            addValue = $('#added').val()+$('#inputPR').val()
+        }else{
+            addValue = $('#added').val()+"," + $('#inputPR').val()
+        }
+        $('#added').val(addValue)
         var pr = "/" + $('#inputPR').val()
         var JIRATEXT = "Jira Tickets:"
         $('#inputPR').val("")
-        $.ajax({
-            url: "https://github.disney.com/api/v3/repos/espn-api-platform/allsports-apis/pulls"+pr,
-            data: {
-                _accept: "application/json"
-            },
-            dataType: "jsonp",
-            success: function(data) {
-                var req = data.data
-                if(req.message == "Not Found"){
-                    alert("Did not find that Pull Request Number\n \nTry again")
-                }else{
-                    var inputAPI = $('#inputAPI').val()
-                    var inputAPIFull = inputAPI+" API:"
-                    var description = null
-                    var ticketLink = null
-                    var files = null
-
-                    var descripInd = req.title.indexOf(":")
-                    var inputAPIFullLength = inputAPIFull.length
-                    var regex = /\bOPENAPIS\b[\s]?[\s\-:][\s]?[0-9]{1,5}/i
-                    var ticketTmp = req.title.match(regex)
-                    if(ticketTmp == null || ticketTmp.length < 0){
-                        ticketTmp = req.head.label.match(regex)
-                        if(ticketTmp == null || ticketTmp.length < 0){
-                            ticketTmp = ["[ticket]"]
-                        }
+        if(error){
+            $("#inputContainer").append("<div id='warningMsg' class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Warning!</strong> "+errorMsg+"</div>")
+        }else{
+            $.ajax({
+                url: "https://github.disney.com/api/v3/repos/espn-api-platform/allsports-apis/pulls"+pr,
+                data: {
+                    _accept: "application/json"
+                },
+                dataType: "jsonp",
+                success: function(data) {
+                    var req = data.data
+                    if(req.message == "Not Found"){
+                        error = true
+                        errorMsg = "This PR doesn't seem to exist. Try again."
                     }
-                    description = (descripInd > -1) ? "("+ticketTmp[0]+") "+$.trim(req.title.substr(descripInd+1,req.title.length)) :"("+ticketTmp[0]+") "+ "[description]"
-                    ticketLink = "https://espnjira.disney.com/browse/"+ticketTmp[0]
-                    var notes = $("#releaseNotes")
-                    var notesText = notes.text()
-                    var notesLength = notesText.length
-                    var jiraLength = JIRATEXT.length
-                    if(notesLength > 0){
-                        var apiIndex = notesText.indexOf(inputAPIFull)
-                        var jiraIndex = notesText.indexOf(JIRATEXT)
-                        if(apiIndex > -1 ){
-                            notes.text(notesText.slice(apiIndex,inputAPIFullLength) + "\n"+description + notesText.slice(inputAPIFullLength,jiraIndex+jiraLength) + "\n"+ticketLink + notesText.slice(jiraIndex+jiraLength))
-                        }else{
-                             notes.text(notesText.slice(0,jiraIndex+jiraLength) + "\n"+ticketLink + notesText.slice(jiraIndex+jiraLength))
-                             notes.prepend(inputAPIFull+"\n"+description+"\n\n")
-                        }
+                    if(error){
+                        $("#inputContainer").append("<div id='warningMsg' class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Warning!</strong> "+errorMsg+"</div>")
                     }else{
-                        $("#releaseNotes").text(inputAPIFull + "\n"+description+"\n\n"+"Jira Tickets:\n"+ticketLink+"\n")
+                        var inputAPI = $('#inputAPI').val()
+                        var inputAPIFull = inputAPI+" API:"
+                        var description = null
+                        var ticketLink = null
+                        var files = null
+
+                        var descripInd = req.title.indexOf(":")
+                        var inputAPIFullLength = inputAPIFull.length
+                        var regex = /\w*"openapis"\w*|\bOPENAPIS\b[\s]?[\s\-:][\s]?[0-9]{1,5}/i
+                        var ticketTmp = req.title.match(regex)
+                        if(ticketTmp == null || ticketTmp.length < 0){
+                            ticketTmp = req.head.label.match(regex)
+                            if(ticketTmp == null || ticketTmp.length < 0){
+                                ticketTmp = ["[ticket]"]
+                            }
+                        }
+                        description = (descripInd > -1) ? "("+ticketTmp[0]+") "+$.trim(req.title.substr(descripInd+1,req.title.length)) :"("+ticketTmp[0]+") "+ "[description]"
+                        ticketLink = "https://espnjira.disney.com/browse/"+ticketTmp[0].toLowerCase()
+                        var notes = $("#releaseNotes")
+                        var notesText = notes.text()
+                        var notesLength = notesText.length
+                        var jiraLength = JIRATEXT.length
+                        if(notesLength > 0){
+                            var apiIndex = notesText.indexOf(inputAPIFull)
+                            var jiraIndex = notesText.indexOf(JIRATEXT)
+                            if(apiIndex > -1 ){
+                                notes.text(notesText.slice(apiIndex,inputAPIFullLength) + "\n"+description + notesText.slice(inputAPIFullLength,jiraIndex+jiraLength) + "\n"+ticketLink + notesText.slice(jiraIndex+jiraLength))
+                            }else{
+                                 notes.text(notesText.slice(0,jiraIndex+jiraLength) + "\n"+ticketLink + notesText.slice(jiraIndex+jiraLength))
+                                 notes.prepend(inputAPIFull+"\n"+description+"\n\n")
+                            }
+                        }else{
+                            $("#releaseNotes").text(inputAPIFull + "\n"+description+"\n\n"+"Jira Tickets:\n"+ticketLink+"\n")
+                        }
+                        getChangedFiles(req.url+"/files")
                     }
-                    getChangedFiles(req.url+"/files")
+                },
+                error: function(err) {
+                     console.log(err.message)
                 }
-            },
-            error: function(err) {
-                 console.log(err.message)
-            }
-        });
+            });
+        }
     })
 });
 
