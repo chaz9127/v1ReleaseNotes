@@ -62,7 +62,7 @@ $(document).ready(function(){
                         if(ticket.indexOf("-") == -1){
                             ticket = ticket.slice(0,JIRABUCKET.length) + "-" + ticket.slice(JIRABUCKET.length)
                         }
-                        description = (descripInd > -1) ? "("+ticket+") "+$.trim(req.title.substr(descripInd+1,req.title.length)) :"("+ticket.toUpperCase()+") "+ "[description]"
+                        description = (descripInd > -1) ? "("+ticket+") "+$.trim(req.title.substr(descripInd+1,req.title.length)) :"("+ticket+") "+ "[description]"
                         ticketLink = "https://espnjira.disney.com/browse/"+ticket.toLowerCase()
                         var notes = $("#releaseNotes")
                         var notesText = notes.text()
