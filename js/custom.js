@@ -4,6 +4,9 @@ $(document).ready(function(){
     })
     $("#input").submit(function(event){
         event.preventDefault();
+        var JIRATEXT = "Jira Tickets:"
+        var JIRABUCKET = "openapis"
+
         var addedInput = $('#added').val()
         var addedPRs = addedInput.split(',');
         var addValue = null
@@ -20,7 +23,6 @@ $(document).ready(function(){
         }
         $('#added').val(addValue)
         var pr = "/" + $('#inputPR').val()
-        var JIRATEXT = "Jira Tickets:"
         $('#inputPR').val("")
         if(error){
             $("#inputContainer").append("<div id='warningMsg' class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Warning!</strong> "+errorMsg+"</div>")
@@ -48,7 +50,7 @@ $(document).ready(function(){
 
                         var descripInd = req.title.indexOf(":")
                         var inputAPIFullLength = inputAPIFull.length
-                        var regex = /\w*"openapis"\w*|\bOPENAPIS\b[\s]?[\s\-:][\s]?[0-9]{1,5}/i
+                        var regex = /openapis[0-9]{1,5}|\bOPENAPIS\b[\s]?[\s\-:][\s]?[0-9]{1,5}/i //\w*"openapis"[0-9]{1,5}\w*|
                         var ticketTmp = req.title.match(regex)
                         if(ticketTmp == null || ticketTmp.length < 0){
                             ticketTmp = req.head.label.match(regex)
@@ -56,8 +58,12 @@ $(document).ready(function(){
                                 ticketTmp = ["[ticket]"]
                             }
                         }
-                        description = (descripInd > -1) ? "("+ticketTmp[0]+") "+$.trim(req.title.substr(descripInd+1,req.title.length)) :"("+ticketTmp[0]+") "+ "[description]"
-                        ticketLink = "https://espnjira.disney.com/browse/"+ticketTmp[0].toLowerCase()
+                        ticket = ticketTmp[0].replace(" ","-")
+                        if(ticket.indexOf("-") == -1){
+                            ticket = ticket.slice(0,JIRABUCKET.length) + "-" + ticket.slice(JIRABUCKET.length)
+                        }
+                        description = (descripInd > -1) ? "("+ticket+") "+$.trim(req.title.substr(descripInd+1,req.title.length)) :"("+ticket.toUpperCase()+") "+ "[description]"
+                        ticketLink = "https://espnjira.disney.com/browse/"+ticket.toLowerCase()
                         var notes = $("#releaseNotes")
                         var notesText = notes.text()
                         var notesLength = notesText.length
