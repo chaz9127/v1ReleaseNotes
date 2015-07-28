@@ -45,6 +45,7 @@ $(document).ready(function(){
                         var inputAPI = $('#inputAPI').val()
                         var inputAPIFull = inputAPI+" API:"
                         var description = null
+                        var descriptionText = "[description]";
                         var ticketLink = null
                         var files = null
                         var warningMessages = [];
@@ -68,12 +69,13 @@ $(document).ready(function(){
                             ticket = ticket.slice(0,JIRABUCKET.length) + "-" + ticket.slice(JIRABUCKET.length)
                         }
                         if(descripInd > -1){
-                            description = "("+ticket+") "+$.trim(req.title.substr(descripInd+1,req.title.length))
+                            descriptionText = $.trim(req.title.substr(descripInd+1,req.title.length))
+                        }else if(req.title != null && req.title != ticketTmp[0]){
+                            descriptionText = req.title
                         }else{
-                            description = "("+ticket+") "+ "[description]"
                             warningMessages.push("There was no description found")
                         }
-                        description = (descripInd > -1) ? "("+ticket+") "+$.trim(req.title.substr(descripInd+1,req.title.length)) :"("+ticket+") "+ "[description]"
+                        description = "("+ticket+") "+ descriptionText
                         ticketLink = "https://espnjira.disney.com/browse/"+ticket.toLowerCase()
                         var notes = $("#releaseNotes")
                         var notesText = notes.text()
