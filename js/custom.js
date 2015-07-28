@@ -25,7 +25,7 @@ $(document).ready(function(){
         var pr = "/" + $('#inputPR').val()
         $('#inputPR').val("")
         if(error){
-            $("#inputContainer").append("<div id='warningMsg' class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Warning!</strong> "+errorMsg+"</div>")
+            addAlert("danger",errorMsg)
         }else{
             $.ajax({
                 url: "https://github.disney.com/api/v3/repos/espn-api-platform/allsports-apis/pulls"+pr,
@@ -40,13 +40,16 @@ $(document).ready(function(){
                         errorMsg = "This PR doesn't seem to exist. Try again."
                     }
                     if(error){
-                        $("#inputContainer").append("<div id='warningMsg' class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Warning!</strong> "+errorMsg+"</div>")
-                    }else{
+                        addAlert("danger",errorMsg)
+                     }else{
                         var inputAPI = $('#inputAPI').val()
                         var inputAPIFull = inputAPI+" API:"
                         var description = null
                         var ticketLink = null
                         var files = null
+                        var warningMessages = [];
+                        var missingTicket = false;
+                        var ticket = null
 
                         var descripInd = req.title.indexOf(":")
                         var inputAPIFullLength = inputAPIFull.length
@@ -56,11 +59,19 @@ $(document).ready(function(){
                             ticketTmp = req.head.label.match(regex)
                             if(ticketTmp == null || ticketTmp.length < 0){
                                 ticketTmp = ["[ticket]"]
+                                warningMessages.push("There was no ticket found")
+                                missingTicket = true;
                             }
                         }
-                        ticket = ticketTmp[0].replace(" ","-")
-                        if(ticket.indexOf("-") == -1){
+                        ticket = (!missingTicket) ? ticket = ticketTmp[0].replace(" ","-") : ticket = ticketTmp[0]
+                        if(ticket.indexOf("-") == -1 && !missingTicket){
                             ticket = ticket.slice(0,JIRABUCKET.length) + "-" + ticket.slice(JIRABUCKET.length)
+                        }
+                        if(descripInd > -1){
+                            description = "("+ticket+") "+$.trim(req.title.substr(descripInd+1,req.title.length))
+                        }else{
+                            description = "("+ticket+") "+ "[description]"
+                            warningMessages.push("There was no description found")
                         }
                         description = (descripInd > -1) ? "("+ticket+") "+$.trim(req.title.substr(descripInd+1,req.title.length)) :"("+ticket+") "+ "[description]"
                         ticketLink = "https://espnjira.disney.com/browse/"+ticket.toLowerCase()
@@ -80,6 +91,9 @@ $(document).ready(function(){
                         }else{
                             $("#releaseNotes").text(inputAPIFull + "\n"+description+"\n\n"+"Jira Tickets:\n"+ticketLink+"\n")
                         }
+                        $.each(warningMessages,function(ind,val){
+                            addAlert("warning",val)
+                        })
                         getChangedFiles(req.url+"/files")
                     }
                 },
@@ -125,4 +139,20 @@ function getChangedFiles(link){
              console.log(err.message)
         }
     });
+}
+
+function addAlert(type,errorMsg){
+    switch(type){
+        case "warning":
+            $("#inputContainer").append("<div class='warningMsg alert alert-warning alert-dismissible fade-out' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Warning!</strong> "+errorMsg+"</div>")
+            break
+        case "danger":
+            $("#inputContainer").append("<div class='warningMsg alert alert-danger alert-dismissible fade-out' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Warning!</strong> "+errorMsg+"</div>")
+            break
+    }
+    window.setTimeout(function() {
+  $(".warningMsg").fadeOut(500, 0).slideUp(500, function(){
+      $(this).remove();
+  });
+}, 5000);
 }
