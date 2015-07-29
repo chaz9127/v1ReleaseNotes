@@ -36,9 +36,45 @@ pre{
 #emailButton:disabled{
     cursor: no-drop;
 }
-#logo img{
-    margin-top: -7px;
+#mainNav{
+    width:100%;
+}
+#logo{
+    padding:0px;
 }
 .navbar-inverse .navbar-nav>li>a{
     visibility: hidden; /*too lazy to fix the css the right way*/
+}
+/*
+
+Sticky Footer by Ryan Fait
+http://ryanfait.com/
+
+*/
+html, body {
+    height: 100%;
+}
+#wrapper {
+    min-height: 100%;
+    height: auto !important; /* This line and the next line are not necessary unless you need IE6 support */
+    height: 100%;
+    margin: 0 auto -80px; /* the bottom margin is the negative value of the footer's height */
+}
+#footer, #push {
+    height: 80px; /* .push must be the same height as .footer */
+}
+#footer{
+    background-color: #222;
+    color:#9d9d9d;
+    font-style: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 18px;
+}
+#footer span{
+    vertical-align:baseline;
+    margin-left:15px;
+    position: relative;
+    top:4px;
+}
+#footer img{
+    margin: 8px 0px 0px 15px;
 }

@@ -27,84 +27,89 @@
 </head>
 
 <body>
+    <div id="wrapper">
+        <!-- Navigation -->
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a id="logo" class="navbar-brand" href="#">
+                        <h1>Send API V1 Release Notes</h1>
+                    </a>
+                </div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="#">.</a><!--too lazy to fix the css the right way-->
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container -->
+        </nav>
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a id="logo" class="navbar-brand" href="#">
-                    <img src="http://a.espncdn.com/i/apis/attribution/powered-by-espn-red_150.png" alt="">
-                </a>
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a href="#">.</a><!--too lazy to fix the css the right way-->
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
-
-    <!-- Page Content -->
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-6" id="inputContainer">
-                <h1>Input Notes</h1>
-                <form id="input" class="form-horizontal" data-toggle="validator">
-                  <div class="form-group">
-                    <label data-toggle="tooltip" data-placement="right" title="Enter the PR" for="inputPR" class="col-sm-2 control-label">PR#</label>
-                    <div class="col-sm-10">
-                      <input type="number" required class="form-control" id="inputPR" placeholder="Pull Request Number">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label data-toggle="tooltip" data-placement="right" title="Choose which API is affected by the Above PR" for="inputAPI" class="col-sm-2 control-label">API</label>
-                    <div class="col-sm-10">
-                      <select id="inputAPI" class="form-control">
-                        <option>Athletes</option>
-                        <option>Audio</option>
-                        <option>Calendar</option>
-                        <option>Draft</option>
-                        <option>Events</option>
-                        <option>Headlines</option>
-                        <option>Leaders</option>
-                        <option>Medals</option>
-                        <option>Now</option>
-                        <option>Photos</option>
-                        <option>Rankings</option>
-                        <option>Research Notes</option>
-                        <option>Standings</option>
-                        <option>Teams</option>
-                        <option>Video</option>
-                        <option>Watch ESPN</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                      <button type="submit" class="btn btn-primary">Add</button>
-                      <input type="hidden" id="added" value="">
-                    </div>
-                  </div>
-                </form>
-            </div>
-            <div class="col-md-6">
-              <h1>Release Notes</h1>
-              <pre id="releaseNotes"></pre>
-              <a id="emailLink" href=""><button id="emailButton" disabled type="button" class="btn btn-primary btn-lg btn-block">E-Mail It</button></a>
+        <!-- Page Content -->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6" id="inputContainer">
+                    <h1>Input Notes</h1>
+                    <form id="input" class="form-horizontal" data-toggle="validator">
+                      <div class="form-group">
+                        <label data-toggle="tooltip" data-placement="right" title="Enter the PR" for="inputPR" class="col-sm-2 control-label">PR#</label>
+                        <div class="col-sm-10">
+                          <input type="number" required class="form-control" id="inputPR" placeholder="Pull Request Number">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label data-toggle="tooltip" data-placement="right" title="Choose which API is affected by the Above PR" for="inputAPI" class="col-sm-2 control-label">API</label>
+                        <div class="col-sm-10">
+                          <select id="inputAPI" class="form-control">
+                            <option>Athletes</option>
+                            <option>Audio</option>
+                            <option>Calendar</option>
+                            <option>Draft</option>
+                            <option>Events</option>
+                            <option>Headlines</option>
+                            <option>Leaders</option>
+                            <option>Medals</option>
+                            <option>Now</option>
+                            <option>Photos</option>
+                            <option>Rankings</option>
+                            <option>Research Notes</option>
+                            <option>Standings</option>
+                            <option>Teams</option>
+                            <option>Video</option>
+                            <option>Watch ESPN</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                          <button type="submit" class="btn btn-primary">Add</button>
+                          <input type="hidden" id="added" value="">
+                        </div>
+                      </div>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                  <h1>Release Notes</h1>
+                  <pre id="releaseNotes"></pre>
+                  <a id="emailLink" href=""><button id="emailButton" disabled type="button" class="btn btn-primary btn-lg btn-block">E-Mail It</button></a>
+                </div>
             </div>
         </div>
+        <div id="push"></div>
+    </div>
+    <div id="footer">
+        <a href="#" ><img src="http://a.espncdn.com/i/apis/attribution/powered-by-espn-red_150.png" alt="" /></a> <span>Chasani Douglas, Web Dev I</span>
     </div>
     <!-- /.container -->
 
